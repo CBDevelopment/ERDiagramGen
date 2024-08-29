@@ -34,7 +34,7 @@ class Attribute(Element):
     """
     Represents an attribute in a database table.
     Attributes:
-        name (str): Name of the attribute.
+        name (str): Name of the attribute. Unique.
         display_name (str): Name of the attribute to be displayed. Becomes underlined if pk is True.
         type (str): Type of the attribute. Default is PRIMITIVE. Other options are COMPOSITE, MULTIVALUED, or DERIVED.
         composite_attrs (list[Element]): List of composite attributes in the attribute.
@@ -58,13 +58,15 @@ class Entity(Element):
     """
     Represents an entity in a database table.
     Attributes:
-        name (str): Name of the entity.
+        name (str): Name of the entity. Unique.
+        display_name (str): Name of the entity to be displayed.
         attributes (list[Attribute]): List of attributes on the entity.
         weak (bool): Weak entity? Set to true to make this a weak entity.
     """
 
-    def __init__(self, name: str, attributes: list[Attribute], weak: bool = False) -> None:
+    def __init__(self, name: str, display_name: str, attributes: list[Attribute], weak: bool = False) -> None:
         self.name = name
+        self.display_name = display_name
         self.attributes = attributes
         self.weak = weak
 
@@ -76,7 +78,8 @@ class Relationship(Element):
     """
     Represents a relationship between two entities in a database.
     Attributes:
-        name (str): Name of the relationship.
+        name (str): Name of the relationship. Unique.
+        display_name (str): Name of the relationship to be displayed.
         entities (list[Entity]): List of entities in the relationship.
         arrows (list[str]): List of arrows for the relationship. Options are MANY_TO_MANY, ONE_TO_MANY, or ONE_TO_ONE.
         attributes (list[Attribute]): List of attributes in the relationship.
@@ -84,8 +87,9 @@ class Relationship(Element):
         weak (bool): Weak relationship? Set to true to make this a weak relationship.
     """
 
-    def __init__(self, name: str, entities: list[Entity], arrows: list[str], attributes: list[Attribute] = None, type: str = "default", weak: bool = False) -> None:
+    def __init__(self, name: str, display_name: str, entities: list[Entity], arrows: list[str], attributes: list[Attribute] = None, type: str = "default", weak: bool = False) -> None:
         self.name = name
+        self.display_name = display_name
         self.type = type
         self.attributes = attributes
         self.entities = entities
@@ -154,17 +158,17 @@ class ERDiagram():
             if relationship.type == "ISA":
                 if relationship.weak:
                     dot.node(relationship.name,
-                             relationship.name, shape="triangle", peripheries="2")
+                             relationship.display_name, shape="triangle", peripheries="2")
                 else:
                     dot.node(relationship.name,
-                             relationship.name, shape="triangle")
+                             relationship.display_name, shape="triangle")
             else:
                 if relationship.weak:
                     dot.node(relationship.name,
-                             relationship.name, shape="diamond", peripheries="2")
+                             relationship.display_name, shape="diamond", peripheries="2")
                 else:
                     dot.node(relationship.name,
-                             relationship.name, shape="diamond")
+                             relationship.display_name, shape="diamond")
 
             if relationship.attributes is not None:
                 for attribute in relationship.attributes:
@@ -176,10 +180,10 @@ class ERDiagram():
 
         for entity in self.entities:
             if entity.weak:
-                dot.node(entity.name, entity.name,
+                dot.node(entity.name, entity.display_name,
                          shape="box", peripheries="2")
             else:
-                dot.node(entity.name, entity.name, shape="box")
+                dot.node(entity.name, entity.display_name, shape="box")
             for attribute in entity.attributes:
                 self.draw_attr(dot, attribute, entity)
 
