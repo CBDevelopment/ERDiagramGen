@@ -1,10 +1,12 @@
 # Create ER Diagrams with Python Objects
 ## Developed by Cutter Beck
 
+![Example ER Diagram](example_diagram.png)
+
 ## Getting Started
 - Make sure to install Graphviz locally from [https://graphviz.org/download/](https://graphviz.org/download/)
 - Install the Graphviz Python package with `pip install graphviz`
-- Open `example.ipynb` and click Run All to generate an example ER diagram
+- Open `example.ipynb` and click Run All to generate an example ER diagram like the one below
 
 ## Making Your Own ER Diagram
 - Create a new Python file or .ipynb Notebook in the `src` directory
