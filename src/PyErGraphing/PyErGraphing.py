@@ -17,6 +17,10 @@ ONE_TO_MANY = "normal"
 # open arrow
 ONE_TO_ONE = "vee"
 
+ENTITY_COLOR = "orange"
+RELATIONSHIP_COLOR = "green"
+ISA_COLOR = "purple"
+
 
 class Element():
     """
@@ -152,23 +156,30 @@ class ERDiagram():
         """
         Draws the entity-relationship diagram.
         """
-        dot = gv.Digraph(comment=self.title)
+        dot = gv.Digraph(comment=self.title, engine="sfdp", node_attr={
+            "style": "filled",
+            "fillcolor": "lightblue",
+            "fontname": "Arial"
+        }, graph_attr={
+            "overlap": "prism",
+            "splines": "true"
+        })
 
         for relationship in self.relationships:
             if relationship.type == "ISA":
                 if relationship.weak:
                     dot.node(relationship.name,
-                             relationship.display_name, shape="triangle", peripheries="2")
+                             relationship.display_name, shape="triangle", peripheries="2", fillcolor=ISA_COLOR)
                 else:
                     dot.node(relationship.name,
-                             relationship.display_name, shape="triangle")
+                             relationship.display_name, shape="triangle", fillcolor=ISA_COLOR)
             else:
                 if relationship.weak:
                     dot.node(relationship.name,
-                             relationship.display_name, shape="diamond", peripheries="2")
+                             relationship.display_name, shape="diamond", peripheries="2", fillcolor=RELATIONSHIP_COLOR)
                 else:
                     dot.node(relationship.name,
-                             relationship.display_name, shape="diamond")
+                             relationship.display_name, shape="diamond", fillcolor=RELATIONSHIP_COLOR)
 
             if relationship.attributes is not None:
                 for attribute in relationship.attributes:
@@ -181,11 +192,13 @@ class ERDiagram():
         for entity in self.entities:
             if entity.weak:
                 dot.node(entity.name, entity.display_name,
-                         shape="box", peripheries="2")
+                         shape="box", peripheries="2", fillcolor=ENTITY_COLOR)
             else:
-                dot.node(entity.name, entity.display_name, shape="box")
+                dot.node(entity.name, entity.display_name,
+                         shape="box", fillcolor=ENTITY_COLOR)
             for attribute in entity.attributes:
                 self.draw_attr(dot, attribute, entity)
 
+        dot.render(self.title, format="svg", cleanup=True)
         dot.render(self.title, format="png", cleanup=True)
         display(Image(self.title + ".png"))
