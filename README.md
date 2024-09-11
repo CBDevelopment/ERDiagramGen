@@ -1,7 +1,7 @@
 # Create ER Diagrams with Python Objects
 ## Developed by Cutter Beck
 
-![Example ER Diagram](example_diagram.jpg)
+![Example ER Diagram](example_diagram1.jpg)
 
 ## Getting Started
 - Make sure to install Graphviz locally from [https://graphviz.org/download/](https://graphviz.org/download/)
